@@ -1,7 +1,7 @@
 clc
 clear all
 % xml_file='78_RLM_YR4.xml';
-xml_file='PrognosisTMABlock3_A_2_1_H&E.xml';
+xml_file='image_test.xml';
 % origin_x = 10144; 78
 % origin_y = 19261;
 %th=50;
@@ -10,7 +10,7 @@ origin_y = 397;
 th = 0;
 
 
-image = imread('PrognosisTMABlock3_A_2_1_H&E_002.jpg');
+image = imread('image_test.jpg');
 [im_height, im_width, im_channel] = size(image);
 % return;
 count=0;
@@ -91,7 +91,7 @@ end
 % img(:,:,1)=final;
 % img(:,:,2)=final;
 % img(:,:,3)=final;
-imwrite(final,'maskWithBoundaryPrognosisTMABlock3_A_2_1_H&E_002.png');
+imwrite(final,'ternary_map.png');
 
 
 
