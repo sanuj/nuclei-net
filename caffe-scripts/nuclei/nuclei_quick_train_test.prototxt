@@ -1,4 +1,4 @@
-name: "NULCEI_quick"
+name: "NUCLEI_quick"
 layer {
   name: "nuclei"
   type: "ImageData"
