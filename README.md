@@ -2,7 +2,7 @@
 
 Code related to my Bachelor's Thesis Project
 
-  	# Introduction
+# Introduction
 
 	Detection and segmentation of nuclei in histopathological images has numerous biomedical applications. 
 	The conventional method involves manual inspection and analyses performed by pathologists to make 
@@ -11,13 +11,13 @@ Code related to my Bachelor's Thesis Project
 	We have trained a Convolutional Neural network to achieve the detection and segmentation of nuclei in 
 	H&E stained images. 
 
-	# Data Preparation and Processing
+# Data Preparation and Processing
 	The CNN takes as input image patches of varying sizes.
 	The classes used for training and testing must also be equally likely.
 	The scripts pertaining to the data preparation, pre-processing and post-processing are present in the 
 	folder named 'Data'.
 
-	# Running the Conv Net
+# Running the Conv Net
 	There are two scripts for training the CNN - One in caffe and one in torch.
 	Currently, we're using torch for training.
 
@@ -31,10 +31,16 @@ Code related to my Bachelor's Thesis Project
 	  - `data` contains images and scripts for preparing data for both Caffe and Theano.
 
 
-	# Results so far
-	The following is a glimpse of the segmentation results we have obtained so far -
-	![alt text](nuclei-net/screenshots/1.png "Test Image")
-	![alt text](nuclei-net/screenshots/2.png "Segmentation Results")
+# Results so far
+The following is a glimpse of the segmentation results we have obtained so far -
+
+Test Image :
+
+![alt tag](screenshots/1.png "Test Image")
+
+Segmentation results :
+
+![alt tag](screenshots/2.png "Segmentation Results")
 	
 
 
