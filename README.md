@@ -2,17 +2,17 @@
 
 Code related to my Bachelor's Thesis Project
 
-  	<b> Introduction </b>
+  	** Introduction **
 
 	Detection and segmentation of nuclei in histopathological images has numerous biomedical applications. The conventional method involves manual inspection and analyses performed by pathologists to make diagnostic and prognostic assessments based on certain features of the cell.
 
 	We have trained a Convolutional Neural network to achieve the detection and segmentation of nuclei in H&E stained images. 
 
-	<b> Data Preparation and Processing </b>
+	** Data Preparation and Processing **
 	The CNN takes as input image patches of varying sizes. The classes used for training and testing must also be equally likely.
-	The scripts pertaining to the data preparation, pre-processing and post-processing are present <a href="https://github.com/sanuj/nuclei-net/tree/master/data" target="_blank">here</a>.
+	The scripts pertaining to the data preparation, pre-processing and post-processing are present [here](https://github.com/sanuj/nuclei-net/tree/master/data "Data").
 
-	<b> Running the Conv Net </b>
+	** Running the Conv Net **
 	There are two scripts for training the CNN - One in caffe and one in torch. Currently, we're using torch for training.
 
 	- Inorder to use the Caffe model :
@@ -25,10 +25,11 @@ Code related to my Bachelor's Thesis Project
 	  - `data` contains images and scripts for preparing data for both Caffe and Theano.
 
 
-	<b> Results so far </b>
+	** Results so far **
 	The following is a glimpse of the segmentation results we have obtained so far -
-	![alt text](screenshots/1.png "Test image")
-	![alt text](screenshots/2.png "Segmentation Results")
+	![alt text](https://github.com/sanuj/nuclei-net/blob/master/screenshots/1.png "Test Image")
+	![alt text](https://github.com/sanuj/nuclei-net/blob/master/screenshots/2.png "Test Image")
+	
 
 
 
