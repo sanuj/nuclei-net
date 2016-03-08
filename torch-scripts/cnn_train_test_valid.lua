@@ -10,7 +10,7 @@ cmd:text('Image Classification using Convolution Neural Network Training/Optimiz
 cmd:text('Example:')
 cmd:text('$> th convolutionneuralnetwork.lua --batchSize 128 --momentum 0.5')
 cmd:text('Options:')
-cmd:option('--learningRate', 0.1, 'learning rate at t=0')
+cmd:option('--learningRate', 0.001, 'learning rate at t=0')
 cmd:option('--lrDecay', 'linear', 'type of learning rate decay : adaptive | linear | schedule | none')
 cmd:option('--minLR', 0.00001, 'minimum learning rate')
 cmd:option('--saturateEpoch', 3000, 'epoch at which linear decayed LR will reach minLR')
@@ -19,7 +19,7 @@ cmd:option('--maxWait', 4, 'maximum number of epochs to wait for a new minima to
 cmd:option('--decayFactor', 0.00004, 'factor by which learning rate is decayed for adaptive decay.')
 cmd:option('--maxOutNorm', 1, 'max norm each layers output neuron weights')
 cmd:option('--momentum', 0.6, 'momentum')
-cmd:option('--channelSize', '{24,50,80}', 'Number of output channels for each convolution layer.')
+cmd:option('--channelSize', '{50,50,80}', 'Number of output channels for each convolution layer.')
 cmd:option('--kernelSize', '{4,5,6}', 'kernel size of each convolution layer. Height = Width')
 cmd:option('--kernelStride', '{1,1,1}', 'kernel stride of each convolution layer. Height = Width')
 cmd:option('--poolSize', '{2,2,2}', 'size of the max pooling of each convolution layer. Height = Width')
@@ -50,7 +50,7 @@ cmd:option('--progress', false, 'print progress bar')
 cmd:option('--silent', false, 'dont print anything to stdout')
 cmd:option('--convertData', true, 'convert data into Data Source')
 cmd:option('--loadModel', true, 'resume a previous experiment. Specify below the path to the saved model.')
-cmd:option('--loadModelPath', '/home/sanuj/save/LYoga:1454304060:1.dat', 'path from where to load model.')
+cmd:option('--loadModelPath', '/home/sanuj/save/LYoga:1456149110:1.dat', 'path from where to load model.')
 cmd:text()
 opt = cmd:parse(arg or {})
 if not opt.silent then
@@ -173,7 +173,7 @@ if not opt.loadModel then
        if opt.batchNorm then
           cnn:add(nn.BatchNormalization(hiddenSize))
        end
-       cnn:add(nn['Sigmoid']())
+       cnn:add(nn['ReLU']())
        inputSize = hiddenSize
        depth = depth + 1
     end
