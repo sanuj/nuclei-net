@@ -2,12 +2,9 @@
 # Used only for Caffe. Useful when you want to delete images to equalize training samples
 # for each class.
 
-label = 0 # training samples corresponding to this label will be deleted
-# file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/78_RLM_YR4_3_class/train.txt'
-# file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/78_RLM_YR4_3_class_31/train_small.txt'
-#file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/63_LLM_YR4_3_class/test.txt'
-file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/63_LLM_YR4_3_class_31/test_small.txt'
-num_deletions = 104251 - 5000 # number of deletions
+label =  2 # training samples corresponding to this label will be deleted
+file_name = '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/big_validation.txt'
+num_deletions = 38214 - 20000 # number of deletions
 
 if __name__ == '__main__':
     f = open(file_name, 'r')

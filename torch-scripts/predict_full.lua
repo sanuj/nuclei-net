@@ -10,8 +10,8 @@ matio = require 'matio'
 ws = 51
 batch_size = 2000
 classes = 3
-image_dir = '/home/sanuj/Projects/nuclei-net/data/training-data/20x/2px'
-image_name = 'PrognosisTMABlock1_A_3_1_H&E.jpg'
+image_dir = '/home/sanuj/Projects/nuclei-net/data/testing-data/20x/normalized'
+image_name = 'PrognosisTMABlock1_A_3_1_H&E.png'
 -- image_dir = '/home/sanuj/Projects/nuclei-net/data/testing-data'
 -- image_name = '84_LLM_YR4_002.png'
 
@@ -74,7 +74,7 @@ if last_counter ~= (counter - 1) then
 	labels[{ {last_counter+1, counter-1}, {} }] = temp:double()
 end
 -- if temp ~= nil then
--- 	print('PREDICTING!!')	
+-- 	print('PREDICTING!!')
 --     temp_labels = model:forward(temp):exp()
 -- 	if labels == nil then
 -- 		labels = temp_labels

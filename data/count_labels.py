@@ -21,10 +21,7 @@
 # This script counts the number of training samples for label 0, 1, 2
 # from a text file prepared for representing training data for a Caffe model
 
-# file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/78_RLM_YR4_3_class_31/train_small.txt'
-#file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/78_RLM_YR4_3_class/train.txt'
-#file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/63_LLM_YR4_3_class/test.txt'
-file_name = '/home/sanuj/Projects/nuclei-net/data/training-data/63_LLM_YR4_3_class_31/test_small.txt'
+file_name = '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/1/validate.txt'
 
 if __name__ == '__main__':
     f = open(file_name, 'r')

@@ -8,7 +8,7 @@ import os
 root = '/home/sanuj/Projects/'
 
 def saveIm(im, label, h, i, j, k):
-    path = root + 'nuclei-net/data/training-data/78_RLM_YR4_3_class_31/' + str(k) + '/'
+    path = root + 'nuclei-net-data/20x/20-patients/PrognosisTMABlock5_1_5_1_H&E_001/' + str(k) + '/'
     # path = root + 'nuclei-net/data/training-data/63_LLM_YR4_3_class_31/' + str(k) + '/'
     name = str(h)+'_'+str(i)+'_'+str(j)+'_'+str(label)+'.jpg'
     if not os.path.exists(path):
@@ -19,11 +19,16 @@ def saveIm(im, label, h, i, j, k):
     print 'saved ' + name + ' in ' + path
     text_file.close()
 
-file_name = root + 'nuclei-net/data/training-data/78_RLM_YR4.jpg'
-mask_name = root + 'nuclei-net/data/training-data/tm_78_RLM_YR4.png'
-# file_name = root + 'nuclei-net/data/training-data/63_LLM_YR4.jpg'
-# mask_name = root + 'nuclei-net/data/training-data/tm_63_LLM_YR4.png'
-w = 31          #window size
+    text_file = open(path + '../meta.txt', "a")
+    scipy.misc.imsave(path + name, im)
+    text_file.write(path + name + ' ' + str(label) + '\n')
+    print 'saved ' + name + ' in ' + path
+    text_file.close()
+
+file_name = root + 'nuclei-net-data/20x/20-patients/norm_PrognosisTMABlock5_1_5_1_H&E_001.tif'
+mask_name = root + 'nuclei-net-data/20x/20-patients/PrognosisTMABlock5_1_5_1_H&E_001.png'
+
+w = 51          #window size
 p = (w-1)/2     #padding
 
 im = mpimg.imread(file_name)
@@ -32,15 +37,17 @@ mask = (mpimg.imread(mask_name)*2).astype(int)
 # mask = mask/np.amax(mask)
 height, width, channel = im.shape
 
-image = np.pad(im, ((p,p),(p,p),(0,0)), 'constant', constant_values=255)
-mask = np.pad(mask, p, 'constant') # default constant_values=0
+# Pad the image
+# image = np.pad(im, ((p,p),(p,p),(0,0)), 'constant', constant_values=255)
+# mask = np.pad(mask, p, 'constant') # default constant_values=0
+image = im
 
 h = 0;
 k = 0;
 # num_l = [0, 0] # 2 classes
 num_l = [0, 0, 0] # 3 classes
-for i in range(p, p+height):
-    for j in range(p, p+width):
+for i in range(p, height-p, 2):
+    for j in range(p, width-p, 2):
         if h >= 25000:
             k = k+1
             h = 0
@@ -54,24 +61,30 @@ for i in range(p, p+height):
                 # saveIm(np.fliplr(temp_x), mask[i, j], h, i, j, k)
                 # h = h+1
                 # num_l[mask[i, j]] = num_l[mask[i, j]]+1
+
                 temp_x = np.rot90(temp_x)
                 saveIm(temp_x, mask[i, j], h, i, j, k)
                 h = h+1
                 num_l[mask[i, j]] = num_l[mask[i, j]]+1
+
                 # saveIm(np.fliplr(temp_x), mask[i, j], h, i, j, k)
                 # h = h+1
                 # num_l[mask[i, j]] = num_l[mask[i, j]]+1
-                temp_x = np.rot90(temp_x)
-                saveIm(temp_x, mask[i, j], h, i, j, k)
-                h = h+1
-                num_l[mask[i, j]] = num_l[mask[i, j]]+1
+
+                # temp_x = np.rot90(temp_x)
+                # saveIm(temp_x, mask[i, j], h, i, j, k)
+                # h = h+1
+                # num_l[mask[i, j]] = num_l[mask[i, j]]+1
+
                 # saveIm(np.fliplr(temp_x), mask[i, j], h, i, j, k)
                 # h = h+1
                 # num_l[mask[i, j]] = num_l[mask[i, j]]+1
+
                 temp_x = np.rot90(temp_x)
                 saveIm(temp_x, mask[i, j], h, i, j, k)
                 h = h+1
                 num_l[mask[i, j]] = num_l[mask[i, j]]+1
+
                 # saveIm(np.fliplr(temp_x), mask[i, j], h, i, j, k)
                 # h = h+1
                 # num_l[mask[i, j]] = num_l[mask[i, j]]+1

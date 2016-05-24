@@ -10,8 +10,8 @@ cmd:text('Image Classification using Convolution Neural Network Training/Optimiz
 cmd:text('Example:')
 cmd:text('$> th convolutionneuralnetwork.lua --batchSize 128 --momentum 0.5')
 cmd:text('Options:')
-cmd:option('--learningRate', 0.001, 'learning rate at t=0')
-cmd:option('--lrDecay', 'linear', 'type of learning rate decay : adaptive | linear | schedule | none')
+cmd:option('--learningRate', 0.01, 'learning rate at t=0')
+cmd:option('--lrDecay', 'none', 'type of learning rate decay : adaptive | linear | schedule | none')
 cmd:option('--minLR', 0.00001, 'minimum learning rate')
 cmd:option('--saturateEpoch', 3000, 'epoch at which linear decayed LR will reach minLR')
 cmd:option('--schedule', '{}', 'learning rate schedule')
@@ -19,23 +19,23 @@ cmd:option('--maxWait', 4, 'maximum number of epochs to wait for a new minima to
 cmd:option('--decayFactor', 0.00004, 'factor by which learning rate is decayed for adaptive decay.')
 cmd:option('--maxOutNorm', 1, 'max norm each layers output neuron weights')
 cmd:option('--momentum', 0.6, 'momentum')
-cmd:option('--channelSize', '{50,50,80}', 'Number of output channels for each convolution layer.')
+cmd:option('--channelSize', '{25,50,80}', 'Number of output channels for each convolution layer.')
 cmd:option('--kernelSize', '{4,5,6}', 'kernel size of each convolution layer. Height = Width')
 cmd:option('--kernelStride', '{1,1,1}', 'kernel stride of each convolution layer. Height = Width')
 cmd:option('--poolSize', '{2,2,2}', 'size of the max pooling of each convolution layer. Height = Width')
 cmd:option('--poolStride', '{2,2,2}', 'stride of the max pooling of each convolution layer. Height = Width')
 cmd:option('--padding', false, 'add math.floor(kernelSize/2) padding to the input of each convolution') 
-cmd:option('--batchSize', 128, 'number of examples per batch')
+cmd:option('--batchSize', 256, 'number of examples per batch')
 cmd:option('--cuda', true, 'use CUDA')
 cmd:option('--useDevice', 1, 'sets the device (GPU) to use')
 cmd:option('--maxEpoch', 2000, 'maximum number of epochs to run')
 cmd:option('--maxTries', 5000, 'maximum number of epochs to try to find a better local minima for early-stopping')
-cmd:option('--dataset', 'Mnist', 'which dataset to use : Mnist | NotMnist | Cifar10 | Cifar100 | Svhn | ImageSource')
-cmd:option('--trainPath', '.', 'Where to look for training images')
-cmd:option('--validPath', '.', 'Where to look for validation images')
-cmd:option('--metaPath', '.', 'Where to cache meta data')
+cmd:option('--dataset', 'ImageSource', 'Mnist | NotMnist | Cifar10 | Cifar100 | Svhn | ImageSource')
+cmd:option('--trainPath', '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/dp-imagesource/train', 'Where to look for training images')
+cmd:option('--validPath', '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/dp-imagesource/validate', 'Where to look for validation images')
+cmd:option('--metaPath', '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/dp-imagesource', 'Where to cache meta data')
 cmd:option('--cacheMode', 'writeonce', 'cache mode of FaceDetection (see SmallImageSource constructor for details)')
-cmd:option('--loadSize', '', 'Image size')
+cmd:option('--loadSize', '3,51,51', 'Image size')
 cmd:option('--sampleSize', '.', 'The size to use for cropped images')
 cmd:option('--standardize', true, 'apply Standardize preprocessing')
 cmd:option('--zca', false, 'apply Zero-Component Analysis whitening')
@@ -46,11 +46,11 @@ cmd:option('--batchNorm', false, 'use batch normalization. dropout is mostly red
 cmd:option('--dropout', true, 'use dropout')
 cmd:option('--dropoutProb', '{0.1,0.2,0.25,0.5,0.5}', 'dropout probabilities')
 cmd:option('--accUpdate', false, 'accumulate gradients inplace')
-cmd:option('--progress', false, 'print progress bar')
+cmd:option('--progress', true, 'print progress bar')
 cmd:option('--silent', false, 'dont print anything to stdout')
-cmd:option('--convertData', true, 'convert data into Data Source')
-cmd:option('--loadModel', true, 'resume a previous experiment. Specify below the path to the saved model.')
-cmd:option('--loadModelPath', '/home/sanuj/save/LYoga:1456149110:1.dat', 'path from where to load model.')
+cmd:option('--convertData', false, 'convert data into Data Source')
+cmd:option('--loadModel', false, 'resume a previous experiment. Specify below the path to the saved model.')
+cmd:option('--loadModelPath', '/home/sanuj/save/LYoga:1462988633:1.dat', 'path from where to load model.')
 cmd:text()
 opt = cmd:parse(arg or {})
 if not opt.silent then
@@ -88,10 +88,12 @@ end
 
 --[[data]]--
 
+print(opt.loadSize)
+
 local ds
 if opt.convertData then
-	nuclei_train = torch.load('/home/sanuj/Projects/20x_2px_train_60000.t7')
-	nuclei_valid = torch.load('/home/sanuj/Projects/20x_2px_validate_15000.t7')
+	nuclei_train = torch.load('/home/sanuj/Projects/nuclei-net-data/20x/20-patients/train.t7')
+	nuclei_valid = torch.load('/home/sanuj/Projects/nuclei-net-data/20x/20-patients/validate.t7')
 	nuclei_train.data = nuclei_train.data:double()
 	nuclei_valid.data = nuclei_valid.data:double()
 	local n_valid = (#nuclei_valid.label)[1]
@@ -114,8 +116,10 @@ if opt.convertData then
 
 	ds = dp.DataSource{train_set=train,valid_set=valid}
 	ds:classes{0, 1, 2}
+elseif opt.dataset == 'ImageSource' then
+  ds = dp.ImageSource{load_size = opt.loadSize, sample_size = opt.loadSize, train_path = opt.trainPath, valid_path = opt.validPath, meta_path = opt.metaPath, verbose = not opt.silent}
 else
-	ds = torch.load('/home/sanuj/Projects/nuclei-net/data/training-data/dp_test_train.t7')
+  ds = torch.load('/home/sanuj/Projects/nuclei-net/data/training-data/dp_test_train.t7')
 end
 
 if not opt.loadModel then
@@ -255,7 +259,51 @@ if not opt.loadModel then
     }
     xp:verbose(not opt.silent)
 else
-   xp = torch.load(opt.loadModelPath)
+  train = dp.Optimizer{
+       acc_update = opt.accUpdate,
+       loss = nn.ModuleCriterion(nn.ClassNLLCriterion(), nil, nn.Convert()),
+       epoch_callback = function(model, report) -- called every epoch
+          if report.epoch > 0 then
+             if opt.lrDecay == 'adaptive' then
+                opt.learningRate = opt.learningRate*ad.decay
+                ad.decay = 1
+             elseif opt.lrDecay == 'schedule' and opt.schedule[report.epoch] then
+                opt.learningRate = opt.schedule[report.epoch]
+             elseif opt.lrDecay == 'linear' then 
+                opt.learningRate = opt.learningRate + opt.decayFactor
+             end
+             opt.learningRate = math.max(opt.minLR, opt.learningRate)
+             if not opt.silent then
+                print("learningRate", opt.learningRate)
+             end
+          end
+       end,
+       callback = function(model, report) -- called every batch
+          -- the ordering here is important
+          if opt.accUpdate then
+             model:accUpdateGradParameters(model.dpnn_input, model.output, opt.learningRate)
+          else
+             model:updateGradParameters(opt.momentum) -- affects gradParams
+             model:updateParameters(opt.learningRate) -- affects params
+          end
+          model:maxParamNorm(opt.maxOutNorm) -- affects params
+          model:zeroGradParameters() -- affects gradParams 
+       end,
+       feedback = dp.Confusion(),
+       sampler = dp.ShuffleSampler{batch_size = opt.batchSize},
+       progress = opt.progress
+    }
+   loaded_xp = torch.load(opt.loadModelPath)
+   xp = dp.Experiment{
+       model = loaded_xp:model(),
+       optimizer = train,
+       validator = loaded_xp:validator(),
+       tester = loaded_xp:tester(),
+       observer = loaded_xp:observer(),
+       random_seed = loaded_xp:randomSeed(),
+       max_epoch = opt.maxEpoch
+    }
+    xp:verbose(not opt.silent)
 end
 
 --[[GPU or CPU]]--
@@ -268,7 +316,7 @@ end
 
 if not opt.silent then
    print"Model:"
-   print(cnn)
+   print(xp:model())
 end
 
 xp:run(ds)
