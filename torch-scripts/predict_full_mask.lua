@@ -58,7 +58,9 @@ w = w+p
 os.execute("mkdir " .. image_dir .. '/' .. 'tmp')
 -- xp = torch.load('/home/sanuj/save/amitpc-HP-Z620-Workstation:1455425081:2.dat')
 -- xp = torch.load('/home/sanuj/Projects/models/amitpc-HP-Z620-Workstation:1457692046:1.dat') -- final 20x
-xp = torch.load('/home/sanuj/save/LYoga:1462988633:1.dat') -- new 20x
+-- /home/sanuj/Projects/models/train_7259.dat
+xp = torch.load('/home/sanuj/Projects/models/train_701_val_734.dat') -- latest 20x
+-- xp = torch.load('/home/sanuj/save/LYoga:1462988633:1.dat') -- new 20x
 -- xp = torch.load('/home/sanuj/save/amitpc-HP-Z620-Workstation_1454011145_1.dat') -- final 40x
 -- xp = torch.load('/home/sanuj/save/LYoga:1454304060:1.dat')
 model = xp:model()

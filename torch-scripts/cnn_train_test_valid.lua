@@ -30,7 +30,7 @@ cmd:option('--cuda', true, 'use CUDA')
 cmd:option('--useDevice', 1, 'sets the device (GPU) to use')
 cmd:option('--maxEpoch', 2000, 'maximum number of epochs to run')
 cmd:option('--maxTries', 5000, 'maximum number of epochs to try to find a better local minima for early-stopping')
-cmd:option('--dataset', 'ImageSource', 'Mnist | NotMnist | Cifar10 | Cifar100 | Svhn | ImageSource')
+cmd:option('--dataset', 'None', 'Mnist | NotMnist | Cifar10 | Cifar100 | Svhn | ImageSource')
 cmd:option('--trainPath', '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/dp-imagesource/train', 'Where to look for training images')
 cmd:option('--validPath', '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/dp-imagesource/validate', 'Where to look for validation images')
 cmd:option('--metaPath', '/home/sanuj/Projects/nuclei-net-data/20x/20-patients/dp-imagesource', 'Where to cache meta data')
@@ -48,7 +48,7 @@ cmd:option('--dropoutProb', '{0.1,0.2,0.25,0.5,0.5}', 'dropout probabilities')
 cmd:option('--accUpdate', false, 'accumulate gradients inplace')
 cmd:option('--progress', true, 'print progress bar')
 cmd:option('--silent', false, 'dont print anything to stdout')
-cmd:option('--convertData', false, 'convert data into Data Source')
+cmd:option('--convertData', true, 'convert data into Data Source')
 cmd:option('--loadModel', false, 'resume a previous experiment. Specify below the path to the saved model.')
 cmd:option('--loadModelPath', '/home/sanuj/save/LYoga:1462988633:1.dat', 'path from where to load model.')
 cmd:text()
@@ -92,30 +92,31 @@ print(opt.loadSize)
 
 local ds
 if opt.convertData then
-	nuclei_train = torch.load('/home/sanuj/Projects/nuclei-net-data/20x/20-patients/train.t7')
-	nuclei_valid = torch.load('/home/sanuj/Projects/nuclei-net-data/20x/20-patients/validate.t7')
+	nuclei_train = torch.load('/home/sanuj/Projects/nuclei-net-data/fine-tune/dummy/train.t7')
+	-- nuclei_valid = torch.load('/home/sanuj/Projects/nuclei-net-data/20x/20-patients/validate.t7')
 	nuclei_train.data = nuclei_train.data:double()
-	nuclei_valid.data = nuclei_valid.data:double()
-	local n_valid = (#nuclei_valid.label)[1]
+	-- nuclei_valid.data = nuclei_valid.data:double()
+	-- local n_valid = (#nuclei_valid.label)[1]
 	local n_train = (#nuclei_train.label)[1]
 
 	local train_input = dp.ImageView('bchw', nuclei_train.data:narrow(1, 1, n_train))
 	local train_target = dp.ClassView('b', nuclei_train.label:narrow(1, 1, n_train))
-	local valid_input = dp.ImageView('bchw', nuclei_valid.data:narrow(1, 1, n_valid))
-	local valid_target = dp.ClassView('b', nuclei_valid.label:narrow(1, 1, n_valid))
+	-- local valid_input = dp.ImageView('bchw', nuclei_valid.data:narrow(1, 1, n_valid))
+	-- local valid_target = dp.ClassView('b', nuclei_valid.label:narrow(1, 1, n_valid))
 
 	train_target:setClasses({0, 1, 2})
-	valid_target:setClasses({0, 1, 2})
+	-- valid_target:setClasses({0, 1, 2})
 
 	-- 3. wrap views into datasets
 
 	local train = dp.DataSet{inputs=train_input,targets=train_target,which_set='train'}
-	local valid = dp.DataSet{inputs=valid_input,targets=valid_target,which_set='valid'}
+	-- local valid = dp.DataSet{inputs=valid_input,targets=valid_target,which_set='valid'}
 
 	-- 4. wrap datasets into datasource
 
-	ds = dp.DataSource{train_set=train,valid_set=valid}
-	ds:classes{0, 1, 2}
+	-- ds = dp.DataSource{train_set=train,valid_set=valid}
+	ds = dp.DataSource{train_set=train}
+  ds:classes{0, 1, 2}
 elseif opt.dataset == 'ImageSource' then
   ds = dp.ImageSource{load_size = opt.loadSize, sample_size = opt.loadSize, train_path = opt.trainPath, valid_path = opt.validPath, meta_path = opt.metaPath, verbose = not opt.silent}
 else
@@ -248,7 +249,7 @@ if not opt.loadModel then
        observer = {
           dp.FileLogger(),
           dp.EarlyStopper{
-             error_report = {'validator','feedback','confusion','accuracy'},
+             error_report = {'optimizer','feedback','confusion','accuracy'},
              maximize = true,
              max_epochs = opt.maxTries
           },
@@ -297,9 +298,17 @@ else
    xp = dp.Experiment{
        model = loaded_xp:model(),
        optimizer = train,
-       validator = loaded_xp:validator(),
-       tester = loaded_xp:tester(),
-       observer = loaded_xp:observer(),
+       validator = ds:validSet() and valid,
+       tester = ds:testSet() and test,
+       observer = {
+          dp.FileLogger(),
+          dp.EarlyStopper{
+             error_report = {'optimizer','feedback','confusion','accuracy'},
+             maximize = true,
+             max_epochs = opt.maxTries
+          },
+          ad
+       },
        random_seed = loaded_xp:randomSeed(),
        max_epoch = opt.maxEpoch
     }
