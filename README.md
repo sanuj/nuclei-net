@@ -34,16 +34,6 @@ Code related to my Bachelor's Thesis Project
 # Results so far
 The following is a glimpse of the segmentation results we have obtained so far -
 
-Test Image :
-
-![alt tag](screenshots/1.png "Test Image")
-
-Segmentation results :
-
-![alt tag](screenshots/2.png "Segmentation Results")
-	
-
-
-
-
-
+Test Image | Segmentation results
+-----------|---------------------
+![alt tag](screenshots/PrognosisTMABlock5_10_3_4_H_E_norm_crop.png "Test Image") | ![alt tag](screenshots/col_map.png "Segmentation Results")
