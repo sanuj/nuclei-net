@@ -2,6 +2,13 @@
 
 Code related to my Bachelor's Thesis Project
 
+# Results so far
+The following is a glimpse of the segmentation results we have obtained so far -
+
+Test Image | Segmentation results
+-----------|---------------------
+![alt tag](screenshots/PrognosisTMABlock5_10_3_4_H_E_norm_crop.png "Test Image") | ![alt tag](screenshots/col_map.png "Segmentation Results")
+
 # Introduction
 
 	Detection and segmentation of nuclei in histopathological images has numerous biomedical applications. 
@@ -29,11 +36,3 @@ Code related to my Bachelor's Thesis Project
 	      - `train_cifar`: the model was trained on cifar-10 data and then fintuned on nuclei data.
 	    - `caffe-scripts/predict.py`: used to predict labels by using a trained model. Put this in your CAFFE_ROOT.
 	  - `data` contains images and scripts for preparing data for both Caffe and Theano.
-
-
-# Results so far
-The following is a glimpse of the segmentation results we have obtained so far -
-
-Test Image | Segmentation results
------------|---------------------
-![alt tag](screenshots/PrognosisTMABlock5_10_3_4_H_E_norm_crop.png "Test Image") | ![alt tag](screenshots/col_map.png "Segmentation Results")
